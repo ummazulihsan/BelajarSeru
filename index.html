@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kuis Interaktif Kelas 3</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #eef6ff, #f8fbff);
+    color: #263238;
+}
+
+header {
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,.15);
+}
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+}
+
+header p {
+    margin: 0;
+    opacity: .95;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* =========================
+   MENU MATA PELAJARAN
+========================= */
+
+#subjectPage h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.subject-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.08);
+    cursor: pointer;
+    transition: .25s;
+    border: 2px solid transparent;
+}
+
+.subject-card:hover {
+    transform: translateY(-5px);
+    border-color: #42a5f5;
+}
+
+.subject-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.subject-card h3 {
+    margin: 5px 0;
+    color: #1565c0;
+}
+
+.subject-card p {
+    color: #607d8b;
+    min-height: 42px;
+}
+
+.question-count {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #1565c0;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+/* =========================
+   QUIZ
+========================= */
+
+#quizPage {
+    display: none;
+}
+
+.quiz-header {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    margin-bottom: 20px;
+}
+
+.quiz-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.quiz-title h2 {
+    margin: 0;
+    color: #1565c0;
+}
+
+.progress-container {
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #1565c0, #42a5f5);
+    transition: .3s;
+}
+
+.question-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+.question-number {
+    color: #1565c0;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.question-text {
+    font-size: 22px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 12px;
+}
+
+.option {
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 14px;
+    background: white;
+    cursor: pointer;
+    font-size: 17px;
+    transition: .2s;
+}
+
+.option:hover {
+    background: #f1f8ff;
+    border-color: #42a5f5;
+}
+
+.option.correct {
+    background: #e8f5e9;
+    border-color: #43a047;
+}
+
+.option.wrong {
+    background: #ffebee;
+    border-color: #e53935;
+}
+
+.option.disabled {
+    pointer-events: none;
+}
+
+.feedback {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    display: none;
+}
+
+.feedback.correct {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.feedback.wrong {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+button {
+    border: none;
+    padding: 13px 22px;
+    border-radius: 12px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #1565c0;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0d47a1;
+}
+
+.btn-secondary {
+    background: #eceff1;
+    color: #37474f;
+}
+
+.btn-success {
+    background: #2e7d32;
+    color: white;
+}
+
+/* =========================
+   HASIL
+========================= */
+
+#resultPage {
+    display: none;
+    text-align: center;
+}
+
+.result-card {
+    background: white;
+    border-radius: 25px;
+    padding: 40px 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.1);
+}
+
+.score-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    margin: 20px auto;
+    background: #e3f2fd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.score-circle strong {
+    font-size: 42px;
+    color: #1565c0;
+}
+
+.result-message {
+    font-size: 20px;
+    margin: 20px 0;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+}
+
+/* =========================
+   IDENTITAS
+========================= */
+
+.student-box {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    margin-bottom: 20px;
+}
+
+.student-box input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #cfd8dc;
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+@media(max-width:600px) {
+    header h1 {
+        font-size: 24px;
+    }
+
+    .question-card {
+        padding: 20px;
+    }
+
+    .question-text {
+        font-size: 19px;
+    }
+
+    .quiz-title {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 Kuis Interaktif Kelas 3</h1>
+    <p>STS 1 • Tahun Pelajaran 2026/2027</p>
+    <p>Kota Pangkalpinang</p>
+</header>
+
+<div class="container">
+
+<!-- =========================
+     HALAMAN PILIH MAPEL
+========================= -->
+
+<section id="subjectPage">
+
+    <div class="student-box">
+        <label><strong>Nama Peserta Didik</strong></label>
+        <input
+            type="text"
+            id="studentName"
+            placeholder="Masukkan nama terlebih dahulu..."
+        >
+    </div>
+
+    <h2>📚 Pilih Mata Pelajaran</h2>
+
+    <div class="subject-grid">
+
+        <div class="subject-card"
+             onclick="startQuiz('Matematika')">
+            <div class="subject-icon">🧮</div>
+            <h3>Matematika</h3>
+            <p>Bilangan, operasi hitung, perkalian, pembagian dan nilai tempat.</p>
+            <span class="question-count">30 Soal</span>
+        </div>
+
+        <div class="subject-card"
+             onclick="startQuiz('Bahasa Inggris')">
+            <div class="subject-icon">🇬🇧</div>
+            <h3>Bahasa Inggris</h3>
+            <p>Food, drinks, like/don't like, have/has, breakfast, lunch, dinner.</p>
+            <span class="question-count">50 Soal</span>
+        </div>
+
+        <div class="subject-card"
+             onclick="startQuiz('SKI')">
+            <div class="subject-icon">🕌</div>
+            <h3>Sejarah Kebudayaan Islam</h3>
+            <p>Jazirah Arab dan kehidupan masyarakat sebelum dan pada masa Nabi Muhammad SAW.</p>
+            <span class="question-count">20 Soal</span>
+        </div>
+
+        <div class="subject-card"
+             onclick="startQuiz('Bahasa Arab')">
+            <div class="subject-icon">🗣️</div>
+            <h3>Bahasa Arab</h3>
+            <p>Kosakata dan ungkapan Bahasa Arab sesuai materi kelas 3.</p>
+            <span class="question-count">Soal</span>
+        </div>
+
+        <div class="subject-card"
+             onclick="startQuiz('Fikih')">
+            <div class="subject-icon">📖</div>
+            <h3>Fikih</h3>
+            <p>Materi ibadah dan ketentuan fikih sesuai pembelajaran kelas 3.</p>
+            <span class="question-count">Soal</span>
+        </div>
+
+        <div class="subject-card"
+             onclick="startQuiz('Akidah Akhlak')">
+            <div class="subject-icon">🌙</div>
+            <h3>Akidah Akhlak</h3>
+            <p>Akidah, akhlak terpuji, perilaku sehari-hari dan keteladanan.</p>
+            <span class="question-count">Soal</span>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================
+     HALAMAN QUIZ
+========================= -->
+
+<section id="quizPage">
+
+    <div class="quiz-header">
+
+        <div class="quiz-title">
+            <h2 id="quizSubject">Matematika</h2>
+            <span id="questionCounter">Soal 1 dari 30</span>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+    </div>
+
+    <div class="question-card">
+
+        <div class="question-number" id="questionNumber">
+            SOAL 1
+        </div>
+
+        <div class="question-text" id="questionText">
+            Memuat soal...
+        </div>
+
+        <div class="options" id="options"></div>
+
+        <div id="feedback" class="feedback"></div>
+
+        <div class="buttons">
+
+            <button
+                class="btn-secondary"
+                onclick="backToSubjects()">
+                ← Pilih Mapel
+            </button>
+
+            <button
+                class="btn-primary"
+                id="nextButton"
+                onclick="nextQuestion()"
+                disabled>
+                Soal Berikutnya →
+            </button>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================
+     HALAMAN HASIL
+========================= -->
+
+<section id="resultPage">
+
+    <div class="result-card">
+
+        <h2 id="resultSubject">
+            Hasil Kuis
+        </h2>
+
+        <p id="resultStudent"></p>
+
+        <div class="score-circle">
+
+            <strong id="scorePercentage">
+                0%
+            </strong>
+
+            <span>Nilai</span>
+
+        </div>
+
+        <h3 id="scoreText">
+            0 / 0
+        </h3>
+
+        <div
+            class="result-message"
+            id="resultMessage">
+        </div>
+
+        <button
+            class="btn-success"
+            onclick="restartQuiz()">
+            🔄 Ulangi Kuis
+        </button>
+
+        <button
+            class="btn-secondary"
+            onclick="backToSubjects()">
+            📚 Pilih Mata Pelajaran
+        </button>
+
+    </div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   KONFIGURASI
+===================================================== */
+
+const APPS_SCRIPT_URL =
+"https://script.google.com/macros/s/GANTI_DENGAN_URL_APPS_SCRIPT/exec";
+
+
+/* =====================================================
+   DATA SEMENTARA
+   Nanti soal dapat sepenuhnya berasal dari Spreadsheet
+===================================================== */
+
+let questions = [];
+let currentQuestion = 0;
+let score = 0;
+let selectedSubject = "";
+let answered = false;
+
+
+/* =====================================================
+   MULAI KUIS
+===================================================== */
+
+async function startQuiz(subject) {
+
+    const name =
+        document.getElementById("studentName").value.trim();
+
+    if (!name) {
+        alert("Silakan masukkan nama peserta didik terlebih dahulu.");
+        document.getElementById("studentName").focus();
+        return;
+    }
+
+    selectedSubject = subject;
+
+    document.getElementById("subjectPage").style.display = "none";
+    document.getElementById("quizPage").style.display = "block";
+    document.getElementById("resultPage").style.display = "none";
+
+    document.getElementById("quizSubject").innerText = subject;
+
+    document.getElementById("questionText").innerText =
+        "Memuat soal...";
+
+    try {
+
+        const response = await fetch(
+            APPS_SCRIPT_URL +
+            "?action=getQuestions&subject=" +
+            encodeURIComponent(subject)
+        );
+
+        const data = await response.json();
+
+        if (!data.success || !data.questions.length) {
+
+            alert(
+                "Belum ada soal untuk mata pelajaran " +
+                subject +
+                ". Silakan isi bank soal di Google Spreadsheet."
+            );
+
+            backToSubjects();
+            return;
+        }
+
+        questions = shuffle(data.questions);
+
+        currentQuestion = 0;
+        score = 0;
+
+        showQuestion();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Gagal mengambil soal dari Google Spreadsheet."
+        );
+
+        backToSubjects();
+    }
+}
+
+
+/* =====================================================
+   TAMPILKAN SOAL
+===================================================== */
+
+function showQuestion() {
+
+    answered = false;
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("questionNumber").innerText =
+        "SOAL " + (currentQuestion + 1);
+
+    document.getElementById("questionCounter").innerText =
+        "Soal " +
+        (currentQuestion + 1) +
+        " dari " +
+        questions.length;
+
+    document.getElementById("questionText").innerHTML =
+        q.question;
+
+    const optionsContainer =
+        document.getElementById("options");
+
+    optionsContainer.innerHTML = "";
+
+    const options =
+        shuffle([...q.options]);
+
+    options.forEach(option => {
+
+        const button =
+            document.createElement("div");
+
+        button.className = "option";
+
+        button.innerHTML = option;
+
+        button.onclick = () =>
+            selectAnswer(button, option);
+
+        optionsContainer.appendChild(button);
+    });
+
+    const progress =
+        ((currentQuestion) / questions.length) * 100;
+
+    document.getElementById("progressBar").style.width =
+        progress + "%";
+
+    document.getElementById("feedback").style.display =
+        "none";
+
+    document.getElementById("nextButton").disabled =
+        true;
+
+    if (currentQuestion === questions.length - 1) {
+
+        document.getElementById("nextButton").innerText =
+            "Lihat Hasil 🎉";
+
+    } else {
+
+        document.getElementById("nextButton").innerText =
+            "Soal Berikutnya →";
+    }
+}
+
+
+/* =====================================================
+   JAWABAN
+===================================================== */
+
+function selectAnswer(element, answer) {
+
+    if (answered) return;
+
+    answered = true;
+
+    const q = questions[currentQuestion];
+
+    const allOptions =
+        document.querySelectorAll(".option");
+
+    allOptions.forEach(option => {
+        option.classList.add("disabled");
+
+        if (option.innerHTML === q.answer) {
+            option.classList.add("correct");
+        }
+    });
+
+    const feedback =
+        document.getElementById("feedback");
+
+    if (answer === q.answer) {
+
+        score++;
+
+        element.classList.add("correct");
+
+        feedback.className =
+            "feedback correct";
+
+        feedback.innerHTML =
+            "✅ <strong>Benar!</strong> " +
+            (q.explanation || "");
+
+    } else {
+
+        element.classList.add("wrong");
+
+        feedback.className =
+            "feedback wrong";
+
+        feedback.innerHTML =
+            "❌ <strong>Belum tepat.</strong> " +
+            "Jawaban yang benar adalah <strong>" +
+            q.answer +
+            "</strong>. " +
+            (q.explanation || "");
+    }
+
+    feedback.style.display = "block";
+
+    document.getElementById("nextButton").disabled =
+        false;
+}
+
+
+/* =====================================================
+   SOAL BERIKUTNYA
+===================================================== */
+
+function nextQuestion() {
+
+    if (!answered) return;
+
+    if (currentQuestion <
+        questions.length - 1) {
+
+        currentQuestion++;
+
+        showQuestion();
+
+    } else {
+
+        finishQuiz();
+    }
+}
+
+
+/* =====================================================
+   HASIL
+===================================================== */
+
+async function finishQuiz() {
+
+    document.getElementById("quizPage").style.display =
+        "none";
+
+    document.getElementById("resultPage").style.display =
+        "block";
+
+    const total = questions.length;
+
+    const percentage =
+        Math.round((score / total) * 100);
+
+    const name =
+        document.getElementById("studentName").value.trim();
+
+    document.getElementById("resultSubject").innerText =
+        "Hasil " + selectedSubject;
+
+    document.getElementById("resultStudent").innerText =
+        "Peserta didik: " + name;
+
+    document.getElementById("scorePercentage").innerText =
+        percentage + "%";
+
+    document.getElementById("scoreText").innerText =
+        score + " dari " + total + " soal benar";
+
+    let message = "";
+
+    if (percentage >= 90) {
+        message =
+            "🌟 Luar biasa! Kamu sangat menguasai materi.";
+    } else if (percentage >= 80) {
+        message =
+            "👏 Sangat baik! Pertahankan hasil belajarmu.";
+    } else if (percentage >= 70) {
+        message =
+            "😊 Bagus! Tingkatkan lagi dengan latihan.";
+    } else {
+        message =
+            "💪 Jangan menyerah. Yuk belajar dan coba lagi!";
+    }
+
+    document.getElementById("resultMessage").innerText =
+        message;
+
+
+    /* Simpan hasil ke Google Spreadsheet */
+
+    try {
+
+        await fetch(APPS_SCRIPT_URL, {
+
+            method: "POST",
+
+            body: JSON.stringify({
+
+                action: "saveResult",
+
+                nama: name,
+
+                mataPelajaran: selectedSubject,
+
+                benar: score,
+
+                total: total,
+
+                nilai: percentage,
+
+                waktu:
+                    new Date().toISOString()
+
+            })
+
+        });
+
+    } catch (error) {
+
+        console.log(
+            "Nilai tidak dapat dikirim.",
+            error
+        );
+    }
+}
+
+
+/* =====================================================
+   KEMBALI KE MENU
+===================================================== */
+
+function backToSubjects() {
+
+    document.getElementById("subjectPage").style.display =
+        "block";
+
+    document.getElementById("quizPage").style.display =
+        "none";
+
+    document.getElementById("resultPage").style.display =
+        "none";
+}
+
+
+/* =====================================================
+   ULANGI
+===================================================== */
+
+function restartQuiz() {
+
+    startQuiz(selectedSubject);
+}
+
+
+/* =====================================================
+   ACAK DATA
+===================================================== */
+
+function shuffle(array) {
+
+    for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(Math.random() * (i + 1));
+
+        [
+            array[i],
+            array[j]
+        ] =
+        [
+            array[j],
+            array[i]
+        ];
+    }
+
+    return array;
+}
+
+</script>
+
+</body>
+</html>
